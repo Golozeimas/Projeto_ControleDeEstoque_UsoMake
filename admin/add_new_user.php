@@ -1,5 +1,6 @@
 <?php 
 include "header.php";
+include "../user/connection.php"
 ?>
 
 
@@ -21,7 +22,7 @@ include "header.php";
           <h5>Cadastrar novo usuário</h5>
         </div>
         <div class="widget-content nopadding">
-          <form action="#" method="get" class="form-horizontal">
+          <form name="form1" action="" method="post" class="form-horizontal">
             <div class="control-group">
               <label class="control-label">Primeiro nome:</label>
               <div class="controls">
@@ -49,16 +50,28 @@ include "header.php";
             <div class="control-group">
               <label class="control-label">selecione o cargo::</label>
               <div class="controls">
-                <select name="role" class="span11">
-                    <option value="">usuario</option>
-                    <option value="">admin</option>
+                <select name="role" id="role" class="span11">
+                    <option value="user">usuario</option>
+                    <option value="admin">admin</option>
                     </select>
               </div>
-            </div>
+            </div> 
+            
+            <div class="alert alert-danger" id="errorUser" style="display: none;">
+                  Esse usuário já existe! Por favor, tente outro!
+                </div>   
+                    
             
             <div class="form-actions">
-              <button type="submit" class="btn btn-success">Save</button>
+              <button type="submit" name="submit1" class="btn btn-success">Salvar</button>
                 </div>
+
+                 
+                <div class="alert alert-success" id="success" style="display: none;">
+                  Usuário criado com sucesso!
+                </div>
+
+                
             </form>
         </div>
       </div>
@@ -70,6 +83,36 @@ include "header.php";
     </div>
 </div>
 
+<?php
+
+if(isset($_POST["submit1"])){
+
+  $username = mysqli_real_escape_string($link,$_POST["username"]);
+  $count = 0;
+  $res = mysqli_query($link,"SELECT * FROM user_registration WHERE username = '$username' ");
+  $count = mysqli_num_rows($res);
+
+  if($count>0){
+    ?>
+    <script type="text/javascript">
+      document.getElementById("success").style.display = "none";
+      document.getElementById("errorUser").style.display = "block";
+      </script>
+    <?php
+  }
+  else{
+    mysqli_query($link,"INSERT INTO user_registration values(null, '$_POST[firstname]', '$_POST[lastname]', '$_POST[username]','$_POST[password]', '$_POST[role]','active') ");
+     ?>
+    <script type="text/javascript">
+      document.getElementById("errorUser").style.display = "none";
+      document.getElementById("success").style.display = "block";
+      </script>
+    <?php
+  }
+
+}
+
+?>
 
 <?php 
 include "footer.php";
