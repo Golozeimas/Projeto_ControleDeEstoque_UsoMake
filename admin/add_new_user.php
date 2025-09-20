@@ -73,9 +73,43 @@ include "../user/connection.php"
 
                 
             </form>
-        </div>
+        </div>        
       </div>
-      
+      <div class="widget-content nopadding">
+            <table class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th> Primeiro nome </th>
+                  <th> Sobrenome </th>
+                  <th> Nome de usuário </th>
+                  <th> Cargo </th>
+                  <th> Status </th>
+                  <th> Editar </th>
+                  <th> Deletar </th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php
+                $res = mysqli_query($link, "select * from user_registration"); // seleciono a tabela do banco de dados
+
+                while($row=mysqli_fetch_array($res)){ // leras linhas da tabela do banco, e as transforma em arrays
+                  ?>
+                  <tr>
+                  <td><?php echo $row["firstname"]?></td>
+                  <td><?php echo $row["lastname"]?></td>
+                  <td><?php echo $row["username"]?></td>
+                  <td class="center"><?php echo $row["role"]?></td>
+                  <td class="center"><?php echo $row["status"]?></td>
+                  <td><a href=""> Editar </a></td>
+                  <td><a href="delete_user.php?id=<?php echo $row["id"]; ?>"> Deletar </a></td>
+                </tr>
+                  <?php
+                }
+
+                ?>
+              </tbody>
+            </table>
+          </div>
 
         </div>
         </div>
@@ -95,8 +129,10 @@ if(isset($_POST["submit1"])){
   if($count>0){
     ?>
     <script type="text/javascript">
+      
       document.getElementById("success").style.display = "none";
       document.getElementById("errorUser").style.display = "block";
+      
       </script>
     <?php
   }
@@ -104,8 +140,13 @@ if(isset($_POST["submit1"])){
     mysqli_query($link,"INSERT INTO user_registration values(null, '$_POST[firstname]', '$_POST[lastname]', '$_POST[username]','$_POST[password]', '$_POST[role]','active') ");
      ?>
     <script type="text/javascript">
+      
       document.getElementById("errorUser").style.display = "none";
       document.getElementById("success").style.display = "block";
+      setTimeout(function(){
+        window.location.href = window.location.href;
+      }, 3000);
+
       </script>
     <?php
   }
